@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.9.1",
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "moment": "^2.29.1",
     "vue": "^2.6.12",
     "vue-js-modal": "^2.0.0-rc.6",
     "vue-resource": "^1.5.2",
