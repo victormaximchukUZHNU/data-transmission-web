@@ -5,8 +5,13 @@
   "author": "victormaximchuk19 <kislovheart@gmail.com>",
   "private": true,
   "scripts": {
+<<<<<<< Updated upstream
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
+=======
+    "dev": "NODE_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "start": "NODE_ENV=production node server.js",
+>>>>>>> Stashed changes
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js"
   },
@@ -14,6 +19,11 @@
     "@popperjs/core": "^2.9.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+<<<<<<< Updated upstream
+=======
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+>>>>>>> Stashed changes
     "vue": "^2.6.12",
     "vue-js-modal": "^2.0.0-rc.6",
     "vue-resource": "^1.5.2",
