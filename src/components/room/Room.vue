@@ -1,44 +1,51 @@
 <template>
-  <div v-if="roomNotFound">
-    <RoomNotFound />
-  </div>
-  <div v-else class="container-fluid vh-100">
-    <b-row class="h-100">
-      <b-col cols="8">
-        VIDEO HERE
-      </b-col>
-      <b-col cols=4>
-        <div class="h-75 chat-area pb-3">
-          <div v-for="message in messages">
-            <ChatItem :message="message" />
+  <div>
+    <div v-if="loading">
+      <LoadingPage />
+    </div>
+    <div v-if="roomNotFound && !loading">
+      <RoomNotFound />
+    </div>
+    <div v-else-if="!loading" class="container-fluid vh-100">
+      <b-row class="h-100">
+        <b-col cols="8">
+          VIDEO HERE
+        </b-col>
+        <b-col cols=4>
+          <div class="h-75 chat-area pb-3">
+            <div v-for="message in messages">
+              <ChatItem :message="message" />
+            </div>
           </div>
-        </div>
-        <div>
-          <b-row>
-            <b-col cols="9" class="pr-0">
-              <b-input class="chat-input" splaceholder="Type message here..." v-model="messageText"/>
-            </b-col>
-            <b-col cols="3" class="pl-0">
-              <b-button class="send-message-button w-100" @click="sendMessage">
-                Надіслати
-              </b-button>
-            </b-col>
-          </b-row>
-        </div>
-      </b-col>
-    </b-row>
+          <div>
+            <b-row>
+              <b-col cols="9" class="pr-0">
+                <b-input class="chat-input" splaceholder="Type message here..." v-model="messageText"/>
+              </b-col>
+              <b-col cols="3" class="pl-0">
+                <b-button class="send-message-button w-100" @click="sendMessage">
+                  Надіслати
+                </b-button>
+              </b-col>
+            </b-row>
+          </div>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
 <script>
-import ChatItem from './ChatItem';
-import RoomNotFound from './RoomNotFound';
+import ChatItem from './chat/ChatItem';
+import RoomNotFound from './states/RoomNotFound';
+import LoadingPage from './states/LoadingPage';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   components: {
     ChatItem,
-    RoomNotFound
+    RoomNotFound,
+    LoadingPage
   },
 
   data() {
@@ -60,7 +67,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('room', ['roomNotFound']),
+    ...mapGetters('room', ['roomNotFound', 'loading']),
 
     roomId() {
       return this.$route.params.id;

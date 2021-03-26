@@ -13,7 +13,12 @@
     </b-row>
     <b-row style="height:50px">
       <b-col class="text-center">
-        <b-button class="copy-button" @click="copyToClipboard" :class="{'copied-button': copied}">
+        <b-button
+          @click="copyToClipboard"
+          :class="{
+            'copied-button': copied,
+            'copy-button': !copied
+          }">
           {{ copyText() }}
         </b-button>
       </b-col>
@@ -22,7 +27,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
   export default {
     data() {
@@ -93,6 +98,18 @@
   .copied-button {
     background-color: #90ee38;
     border-color: #90ee38;
+    font-size: 15px;
+    border-radius: 30px;
+  }
+
+  .copied-button:hover {
+    background-color: #90ee38;
+    border-color: #90ee38;
+  }
+
+  .copied-button:active {
+    background-color: #90ee38 !important;
+    border-color: #90ee38 !important;
   }
 </style>
 
