@@ -22,14 +22,9 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      generatedLink: {
-        type: String,
-        default: 'https://google.com'
-      }
-    },
+  import { mapGetters } from 'vuex';
 
+  export default {
     data() {
       return {
         copied: false,
@@ -37,6 +32,10 @@
           return this.copied ? 'СКОПІЙОВАНО!' : 'КОПІЮВАТИ!';
         }
       }
+    },
+
+    computed: {
+      ...mapGetters('room', ['generatedLink'])
     },
 
     methods: {
@@ -75,15 +74,15 @@
   }
 
   .copy-button {
-    background-color: #ac3b61;
-    border-color: #ac3b61;
+    background-color: #26495c;
+    border-color: #26495c;
     font-size: 15px;
     border-radius: 30px;
   }
 
   .copied-button {
-    background-color: #a3f358;
-    border-color: #a3f358;
+    background-color: #90ee38;
+    border-color: #90ee38;
   }
 </style>
 

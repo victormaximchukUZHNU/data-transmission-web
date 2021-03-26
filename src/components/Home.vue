@@ -4,7 +4,7 @@
       <b-col>
         <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
           <div class="info-section">
-            <h3>Давайте розпочнемо зв'язок!</h3>
+            <h3>Давайте розпочнемо!</h3>
             <b-button size="lg" class="start-button w-100 my-3" @click="handleClick">
               ПОЧАТИ
             </b-button>
@@ -21,6 +21,7 @@
 
 <script>
 import LinkGenerator from './modals/LinkGenerator';
+import { mapActions } from 'vuex';
 
 export default {
   components: {
@@ -28,7 +29,11 @@ export default {
   },
 
   methods: {
-    handleClick() {
+    ...mapActions('room', ['createRoom']),
+
+    async handleClick() {
+      await this.createRoom();
+
       this.$modal.show('link-generator');
     }
   }
@@ -42,8 +47,8 @@ export default {
 
   .start-button {
     box-shadow: 0 0 4px black;
-    background-color: #ac3b61;
-    border-color: #ac3b61;
+    background-color: #26495c;
+    border-color: #26495c;
     font-size: 25px;
     height: 70px;
     font-weight: 600;
