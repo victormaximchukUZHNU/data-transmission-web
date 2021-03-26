@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js"
   },
@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "express": "^4.17.1",
     "moment": "^2.29.1",
     "vue": "^2.6.12",
     "vue-js-modal": "^2.0.0-rc.6",
