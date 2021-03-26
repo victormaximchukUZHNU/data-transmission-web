@@ -112,6 +112,16 @@ export default {
     font-weight: 600;
   }
 
+  .send-message-button:hover {
+    background-color: #26495c;
+    border-color: #26495c;
+  }
+
+  .send-message-button:active {
+    background-color: #26495c !important;
+    border-color: #26495c !important;
+  }
+
   .chat-area {
     background: #e5e5dc;
     overflow-y: scroll;

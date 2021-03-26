@@ -80,6 +80,16 @@
     border-radius: 30px;
   }
 
+  .copy-button:hover {
+    background-color: #26495c;
+    border-color: #26495c;
+  }
+
+  .copy-button:active {
+    background-color: #26495c !important;
+    border-color: #26495c !important;
+  }
+
   .copied-button {
     background-color: #90ee38;
     border-color: #90ee38;
