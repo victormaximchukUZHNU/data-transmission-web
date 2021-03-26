@@ -1,7 +1,8 @@
 import axios from 'axios';
+import apiURL from './helpers/apiURL';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: apiURL()
 });
 
 export default apiClient;

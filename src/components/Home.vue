@@ -54,4 +54,9 @@ export default {
     font-weight: 600;
     border-radius: 30px;
   }
+
+  .start-button:hover {
+    background-color: #26495c;
+    border-color: #26495c;
+  }
 </style>

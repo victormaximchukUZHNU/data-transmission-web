@@ -8,6 +8,7 @@ import VModal from 'vue-js-modal'
 import VueSocketIO from 'vue-socket.io'
 import VueResource from 'vue-resource'
 import store from './store/index'
+import apiURL from '../src/api/helpers/apiURL'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -15,7 +16,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.config.productionTip = false
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:3000',
+  connection: apiURL(),
   withCredentials: true,
   vuex: {
       store,
