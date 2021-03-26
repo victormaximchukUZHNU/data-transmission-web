@@ -11,7 +11,11 @@ export default {
 </script>
 
 <style>
+  body {
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
  .bg {
-   background-color: #eee2dc;
+   background-color: white;
  }
 </style>
