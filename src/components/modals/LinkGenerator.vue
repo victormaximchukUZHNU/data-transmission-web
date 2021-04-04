@@ -119,7 +119,7 @@ import { mapGetters, mapActions } from 'vuex';
     border-top-color: white;
     border-left-color: white;
     border-right-color: white;
-    background: white;
+    background-color: white !important;
     border-radius: 0;
   }
 

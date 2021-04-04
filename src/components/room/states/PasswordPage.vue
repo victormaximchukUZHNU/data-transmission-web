@@ -89,7 +89,8 @@
     border-top-color: transparent;
     border-left-color: transparent;
     border-right-color: transparent;
-    background-color: transparent;
+    background-color: transparent !important;
+    border-radius: 0;
   }
 
   .password-input:focus {
@@ -98,7 +99,7 @@
     border-top-color: transparent;
     border-left-color: transparent;
     border-right-color: transparent;
-    background-color: transparent;
+    background-color: transparent !important;
   }
 
   .login-button {
