@@ -6,7 +6,10 @@
     <div v-if="roomNotFound && !loading">
       <RoomNotFound />
     </div>
-    <div v-else-if="!loading" class="container-fluid vh-100">
+    <div v-if="currentJoinStep === 'join_form' && !loading">
+      <PasswordPage />
+    </div>
+    <div v-else-if="currentJoinStep === 'live_stream' && !loading" class="container-fluid vh-100">
       <b-row class="h-100">
         <b-col cols="8">
           VIDEO HERE
@@ -39,13 +42,15 @@
 import ChatItem from './chat/ChatItem';
 import RoomNotFound from './states/RoomNotFound';
 import LoadingPage from './states/LoadingPage';
+import PasswordPage from './states/PasswordPage';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   components: {
     ChatItem,
     RoomNotFound,
-    LoadingPage
+    LoadingPage,
+    PasswordPage
   },
 
   data() {
@@ -58,32 +63,55 @@ export default {
 
   sockets: {
     message(message) {
-      if (message.senderId !== this.uniqId) {
+      if (this.isSendFromRemote(message.senderId)) {
         message.incoming = true;
       }
 
       this.messages.push(message);
+    },
+
+    participantConnected(senderId) {
+      if (this.currentJoinStep === 'live_stream' && this.isSendFromRemote(senderId)) {
+        this.$notify({
+          group: 'app',
+          text: `${senderId} приєднався.`,
+          type: 'info'
+        })
+      }
     }
   },
 
   computed: {
-    ...mapGetters('room', ['roomNotFound', 'loading']),
+    ...mapGetters('room', ['roomNotFound', 'loading', 'currentJoinStep']),
 
     roomId() {
       return this.$route.params.id;
     }
   },
 
+  watch: {
+    currentJoinStep(joinStep) {
+      if (joinStep && joinStep === 'live_stream') {
+        this.$socket.emit('participantConnected', {
+          roomId: this.roomId,
+          senderId: this.uniqId
+        })
+      }
+    }
+  },
+
   created() {
     this.getRoom(this.roomId)
       .then(() => {
-        this.$socket.emit('chat connected', this.roomId);
+        this.$socket.emit('chatConnected', this.roomId);
 
         if (!localStorage.uniqId) {
           localStorage.uniqId = this.generateName();
         }
 
         this.uniqId = localStorage.uniqId;
+
+
       });
   },
 
@@ -106,6 +134,10 @@ export default {
 
     generateName() {
       return '_' + Math.random().toString(36).substr(2, 9);
+    },
+
+    isSendFromRemote(senderId) {
+      return this.uniqId !== senderId;
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="bg">
+    <notifications group="app" position="top center"/>
     <router-view/>
   </div>
 </template>
@@ -16,6 +17,6 @@ export default {
   }
 
  .bg {
-   background-color: white;
+   background-color: #f8f8f8;
  }
 </style>

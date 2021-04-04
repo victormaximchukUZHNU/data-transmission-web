@@ -9,6 +9,7 @@ import VueSocketIO from 'vue-socket.io'
 import VueResource from 'vue-resource'
 import store from './store/index'
 import apiURL from '../src/api/helpers/apiURL'
+import Notifications from 'vue-notification'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -27,6 +28,7 @@ Vue.use(new VueSocketIO({
 Vue.use(BootstrapVue)
 Vue.use(VModal)
 Vue.use(VueResource)
+Vue.use(Notifications)
 
 /* eslint-disable no-new */
 new Vue({

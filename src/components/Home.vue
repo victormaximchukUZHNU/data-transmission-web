@@ -29,11 +29,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('room', ['createRoom']),
-
-    async handleClick() {
-      await this.createRoom();
-
+    handleClick() {
       this.$modal.show('link-generator');
     }
   }
