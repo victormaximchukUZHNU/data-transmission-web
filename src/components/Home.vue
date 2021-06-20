@@ -21,7 +21,6 @@
 
 <script>
 import LinkGenerator from './modals/LinkGenerator';
-import { mapActions } from 'vuex';
 
 export default {
   components: {

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div v-if="message.incoming" class="d-flex justify-content-start ml-2 mt-3">
+    <div
+      v-if="message.incoming"
+      class="d-flex justify-content-start ml-2 mt-3"
+      :id="message.senderId"
+    >
       <div class='incoming-message p-3'>
         <div class="sender d-flex justify-content-between">
           {{message.senderId}}:
@@ -14,7 +18,11 @@
 
       </div>
     </div>
-    <div v-else class="d-flex justify-content-end mr-2 mt-3">
+    <div
+      v-else
+      class="d-flex justify-content-end mr-2 mt-3"
+      :id="message.senderId"
+    >
       <div class='outgoing-message p-3'>
         <div class="sender d-flex justify-content-between">
           Ви:
@@ -39,6 +47,24 @@ export default {
     message: {
       type: Object,
       default: () => {}
+    }
+  },
+  mounted() {
+    if (this.needToScroll()) {
+      this.scrollToMessage();
+    }
+  },
+  methods: {
+    needToScroll() {
+      const chatArea = document.querySelector('.chat-area');
+
+      return -(chatArea.offsetHeight - (chatArea.scrollHeight - chatArea.scrollTop)) <= 275;
+    },
+
+    scrollToMessage() {
+      const messages = document.querySelectorAll(`#${this.message.senderId}`);
+
+      messages[messages.length - 1].scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
   },
   data() {
