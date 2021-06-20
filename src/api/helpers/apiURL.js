@@ -3,5 +3,5 @@ export default () => {
     return 'https://data-transmission-api.herokuapp.com';
   }
 
-  return 'http://localhost:3000';
+  return window.location.origin.replace('8080', '3000');
 };

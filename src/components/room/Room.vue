@@ -10,12 +10,12 @@
       <PasswordPage />
     </div>
     <div v-else-if="currentJoinStep === 'live_stream' && !loading" class="container-fluid vh-100">
-      <b-row class="h-100">
-        <b-col cols="8">
-          VIDEO HERE
+      <b-row style="height: 85% !important;">
+        <b-col cols="8" class="pr-0">
+          <Stream :options="{ uniqId: this.uniqId, roomId: this.roomId }"/>
         </b-col>
-        <b-col cols=4>
-          <div class="h-75 chat-area pb-3">
+        <b-col cols=4 class="pl-0" style="max-height: 100%">
+          <div class="chat-area pb-3">
             <div v-for="message in messages">
               <ChatItem :message="message" />
             </div>
@@ -23,7 +23,12 @@
           <div>
             <b-row>
               <b-col cols="9" class="pr-0">
-                <b-input class="chat-input" splaceholder="Type message here..." v-model="messageText"/>
+                <b-input
+                  class="chat-input"
+                  @keydown.enter.native.prevent="sendMessage"
+                  placeholder="Напишіть повідомлення..."
+                  v-model="messageText"
+                />
               </b-col>
               <b-col cols="3" class="pl-0">
                 <b-button class="send-message-button w-100" @click="sendMessage">
@@ -34,6 +39,7 @@
           </div>
         </b-col>
       </b-row>
+      <DeviceActions />
     </div>
   </div>
 </template>
@@ -43,6 +49,9 @@ import ChatItem from './chat/ChatItem';
 import RoomNotFound from './states/RoomNotFound';
 import LoadingPage from './states/LoadingPage';
 import PasswordPage from './states/PasswordPage';
+import Stream from './stream/Stream';
+import DeviceActions from './stream/DeviceActions'
+import isSendFromRemote from './stream/helpers/isSendFromRemote';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -50,7 +59,9 @@ export default {
     ChatItem,
     RoomNotFound,
     LoadingPage,
-    PasswordPage
+    PasswordPage,
+    Stream,
+    DeviceActions
   },
 
   data() {
@@ -63,26 +74,35 @@ export default {
 
   sockets: {
     message(message) {
-      if (this.isSendFromRemote(message.senderId)) {
-        message.incoming = true;
-      }
+      message.incoming = isSendFromRemote(message.senderId);
 
       this.messages.push(message);
     },
 
-    participantConnected(senderId) {
-      if (this.currentJoinStep === 'live_stream' && this.isSendFromRemote(senderId)) {
+    participantConnected({ senderId }) {
+      if (this.currentJoinStep === 'live_stream' && isSendFromRemote(senderId)) {
         this.$notify({
           group: 'app',
           text: `${senderId} приєднався.`,
           type: 'info'
-        })
+        });
+      }
+    },
+
+    participantDisconnected (senderId) {
+      if (this.currentJoinStep === 'live_stream' && isSendFromRemote(senderId)) {
+        this.$notify({
+          group: 'app',
+          text: `${senderId} від'єднався.`,
+          type: 'warn'
+        });
       }
     }
   },
 
   computed: {
     ...mapGetters('room', ['roomNotFound', 'loading', 'currentJoinStep']),
+    ...mapGetters('stream', ['isCameraEnabled', 'isMicrophoneEnabled']),
 
     roomId() {
       return this.$route.params.id;
@@ -94,8 +114,10 @@ export default {
       if (joinStep && joinStep === 'live_stream') {
         this.$socket.emit('participantConnected', {
           roomId: this.roomId,
-          senderId: this.uniqId
-        })
+          senderId: this.uniqId,
+          isParticipantCameraEnabled: this.isCameraEnabled,
+          isParticipantMicrophoneEnabled: this.isMicrophoneEnabled
+        });
       }
     }
   },
@@ -110,9 +132,14 @@ export default {
         }
 
         this.uniqId = localStorage.uniqId;
-
-
       });
+
+    window.onbeforeunload = () => {
+      this.$socket.emit('participantDisconnected', {
+        roomId: this.roomId,
+        senderId: this.uniqId
+      });
+    }
   },
 
   methods: {
@@ -134,10 +161,6 @@ export default {
 
     generateName() {
       return '_' + Math.random().toString(36).substr(2, 9);
-    },
-
-    isSendFromRemote(senderId) {
-      return this.uniqId !== senderId;
     }
   }
 }
@@ -164,7 +187,7 @@ export default {
   .chat-area {
     background: #e5e5dc;
     overflow-y: scroll;
-    max-height: 75vh;
+    height: calc(100% - 38px) !important;
   }
 
   .chat-input {

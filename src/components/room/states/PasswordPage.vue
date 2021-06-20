@@ -3,6 +3,50 @@
     <b-row>
       <b-col>
         <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+          <video
+            id="local-video"
+            autoplay width="400"
+            height="300"
+            v-show="isCameraEnabled"
+            style="margin-bottom: 30px"
+          />
+          <img
+            style="margin-bottom: 30px"
+            src='../../../assets/images/no_camera.png'
+            width="400"
+            height="300"
+            v-show="!isCameraEnabled"
+          >
+          <div class="device-actions">
+            <img
+              src="../../../assets/icons/camera_enabled.svg"
+              v-show="isCameraEnabled"
+              @click="handleCamera"
+              height="30"
+              width="30"
+            >
+            <img
+              src="../../../assets/icons/camera_disabled.svg"
+              v-show="!isCameraEnabled"
+              @click="handleCamera"
+              height="30"
+              width="30"
+            >
+            <img
+              src="../../../assets/icons/microphone_enabled.svg"
+              v-show="isMicrophoneEnabled"
+              @click="handleMicrophone"
+              height="30"
+              width="30"
+            >
+            <img
+              src="../../../assets/icons/microphone_disabled.svg"
+              v-show="!isMicrophoneEnabled"
+              @click="handleMicrophone"
+              height="30"
+              width="30"
+            >
+          </div>
           <div class="form-section">
               <div class="password-text d-flex justify-content-center align-items-center h-25">
                 Введіть пароль
@@ -34,7 +78,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
 
   export default {
     data() {
@@ -44,12 +88,18 @@
       }
     },
     computed: {
+      ...mapGetters('stream', ['isMicrophoneEnabled', 'isCameraEnabled']),
+
       roomId() {
         return this.$route.params.id;
       }
     },
+    async created() {
+      await this.getUserMedia();
+    },
     methods: {
       ...mapActions('room', ['validatePassword']),
+      ...mapActions('stream', ['setLocalStream', 'setIsCameraEnabled', 'setIsMicrophoneEnabled']),
 
       handlePasswordEnter: function () {
         if (!this.password) {
@@ -61,6 +111,70 @@
 
       async handleLogin() {
         await this.validatePassword({ shortId: this.roomId, password: this.password });
+      },
+
+      async getUserMedia() {
+        try {
+          const localStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true,
+          });
+
+          this.setLocalStream(localStream);
+          this.setIsCameraEnabled(true);
+          this.setIsMicrophoneEnabled(true);
+
+          const localVideo = document.getElementById("local-video");
+
+          localVideo.muted = true;
+          localVideo.srcObject = localStream;
+        } catch (error) {
+          this.handleGetUserMediaError(error);
+        }
+      },
+
+      handleGetUserMediaError(error) {
+        switch(error.name) {
+          case "NotFoundError":
+            this.$notify({
+              group: 'app',
+              text: 'Ваш мікрофон або камеру не було знайдено!',
+              type: 'warn'
+            });
+
+            break;
+          case "SecurityError":
+          case "PermissionDeniedError":
+            break;
+          case "NotAllowedError":
+            this.$notify({
+              group: 'app',
+              text: 'Щоб приєднатись потрібно надати доступ до камери та мікрофону!',
+              type: 'warn'
+            });
+
+            break;
+          default:
+            this.$notify({
+              group: 'app',
+              text: 'Сталася помилка при пошуку камери або мікрофону!',
+              type: 'warn'
+            });
+
+            break;
+        }
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      },
+
+      handleCamera() {
+        this.setIsCameraEnabled(!this.isCameraEnabled);
+      },
+
+      handleMicrophone() {
+        this.setIsMicrophoneEnabled(!this.isMicrophoneEnabled);
       }
     }
   }
