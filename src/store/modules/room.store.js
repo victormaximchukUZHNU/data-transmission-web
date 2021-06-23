@@ -27,7 +27,7 @@ const mutations = {
   },
 
   GENERATE_LINK(state, shortId) {
-    state.generatedLink = `${window.location.host}/#/${shortId}`;
+    state.generatedLink = `https://${window.location.host}/#/${shortId}`;
   },
 
   ROOM_NOT_FOUND(state, value) {
