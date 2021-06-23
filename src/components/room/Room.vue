@@ -6,7 +6,7 @@
     <div v-if="roomNotFound && !loading">
       <RoomNotFound />
     </div>
-    <div v-if="currentJoinStep === 'join_form' && !loading">
+    <div v-if="currentJoinStep === 'join_form' && !loading && !roomNotFound">
       <PasswordPage />
     </div>
     <div v-else-if="currentJoinStep === 'live_stream' && !loading" class="container-fluid vh-100">
